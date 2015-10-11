@@ -1,4 +1,4 @@
-package ru.ncedu.opflite.domain.managers;
+package ru.ncedu.opflite.domain.businesslogic;
 
 import ru.ncedu.opflite.domain.model.account.AccountNumberGenerator;
 import ru.ncedu.opflite.domain.model.account.CustomerAccount;

@@ -1,6 +1,6 @@
 package ru.ncedu.opflite.integration;
 
-import ru.ncedu.opflite.domain.managers.CustomerAccountFacade;
+import ru.ncedu.opflite.domain.businesslogic.CustomerAccountFacade;
 import ru.ncedu.opflite.domain.model.account.CustomerAccount;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
