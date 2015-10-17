@@ -4,6 +4,7 @@ import ru.ncedu.opflite.integration.ContractViolationException;
 import ru.ncedu.opflite.integration.OPFLiteFacade;
 
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 public class ServicesTest {
 
@@ -119,7 +120,7 @@ public class ServicesTest {
     }
 
     private static void wrongInternetServiceFlowTest() {
-        String accountNumber;
+        final String accountNumber;
 
         try {
             accountNumber = createCustomerAccount();
@@ -128,13 +129,15 @@ public class ServicesTest {
             throw new TestFailedException("wrongInternetServiceFlowTest", e);
         }
 
-        try {
-            OPFLiteFacade.resumeInternetService(accountNumber);
-        } catch (ContractViolationException e) {
-            // expected exception
-        } catch (Exception e) {
-            throw new TestFailedException("wrongInternetServiceFlowTest", e);
-        }
+        final String accountNumberClojure = accountNumber;
+
+        executeWithExceptionCheck("wrongInternetServiceFlowTest", new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                OPFLiteFacade.resumeInternetService(accountNumberClojure);
+                return null;
+            }
+        });
 
         try {
             OPFLiteFacade.suspendInternetService(accountNumber);
@@ -142,13 +145,13 @@ public class ServicesTest {
             throw new TestFailedException("wrongInternetServiceFlowTest", e);
         }
 
-        try {
-            OPFLiteFacade.suspendInternetService(accountNumber);
-        } catch (ContractViolationException e) {
-            // expected exception
-        } catch (Exception e) {
-            throw new TestFailedException("wrongInternetServiceFlowTest", e);
-        }
+        executeWithExceptionCheck("wrongInternetServiceFlowTest", new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                OPFLiteFacade.suspendInternetService(accountNumberClojure);
+                return null;
+            }
+        });
 
         try {
             OPFLiteFacade.disconnectInternetService(accountNumber);
@@ -156,15 +159,14 @@ public class ServicesTest {
             throw new TestFailedException("wrongInternetServiceFlowTest", e);
         }
 
-        try {
-            OPFLiteFacade.disconnectInternetService(accountNumber);
-        } catch (ContractViolationException e) {
-            return;
-        } catch (Exception e) {
-            throw new TestFailedException("wrongInternetServiceFlowTest", e);
-        }
+        executeWithExceptionCheck("wrongInternetServiceFlowTest", new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                OPFLiteFacade.disconnectInternetService(accountNumberClojure);
+                return null;
+            }
+        });
 
-        throw new TestFailedException("wrongInternetServiceFlowTest");
     }
 
     private static void wrongTVServiceFlowTest() {
@@ -177,13 +179,15 @@ public class ServicesTest {
             throw new TestFailedException("wrongTVServiceFlowTest", e);
         }
 
-        try {
-            OPFLiteFacade.resumeTVService(accountNumber);
-        } catch (ContractViolationException e) {
-            // expected exception
-        } catch (Exception e) {
-            throw new TestFailedException("wrongTVServiceFlowTest", e);
-        }
+        final String accountNumberClojure = accountNumber;
+
+        executeWithExceptionCheck("wrongTVServiceFlowTest", new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                OPFLiteFacade.resumeTVService(accountNumberClojure);
+                return null;
+            }
+        });
 
         try {
             OPFLiteFacade.suspendTVService(accountNumber);
@@ -191,13 +195,13 @@ public class ServicesTest {
             throw new TestFailedException("wrongTVServiceFlowTest", e);
         }
 
-        try {
-            OPFLiteFacade.suspendTVService(accountNumber);
-        } catch (ContractViolationException e) {
-            // expected exception
-        } catch (Exception e) {
-            throw new TestFailedException("wrongTVServiceFlowTest", e);
-        }
+        executeWithExceptionCheck("wrongTVServiceFlowTest", new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                OPFLiteFacade.suspendTVService(accountNumberClojure);
+                return null;
+            }
+        });
 
         try {
             OPFLiteFacade.disconnectTVService(accountNumber);
@@ -205,15 +209,14 @@ public class ServicesTest {
             throw new TestFailedException("wrongTVServiceFlowTest", e);
         }
 
-        try {
-            OPFLiteFacade.disconnectTVService(accountNumber);
-        } catch (ContractViolationException e) {
-            return;
-        } catch (Exception e) {
-            throw new TestFailedException("wrongTVServiceFlowTest", e);
-        }
+        executeWithExceptionCheck("wrongTVServiceFlowTest", new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                OPFLiteFacade.disconnectTVService(accountNumberClojure);
+                return null;
+            }
+        });
 
-        throw new TestFailedException("wrongTVServiceFlowTest");
     }
 
     private static void getAllServicesTest() {
@@ -253,6 +256,17 @@ public class ServicesTest {
     private static String createCustomerAccount() throws ContractViolationException {
         return OPFLiteFacade.createCustomerAccount(CustomerAccountTests.RESIDENTIAL,
                 CustomerAccountTests.FIRST_NAME, CustomerAccountTests.LAST_NAME);
+    }
+
+    private static void executeWithExceptionCheck(String test, Callable<Void> callable) {
+        try {
+            callable.call();
+        } catch (ContractViolationException e) {
+            return;
+        } catch (Exception e) {
+            throw new TestFailedException(test, e);
+        }
+        throw new TestFailedException(test);
     }
 
 
