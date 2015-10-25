@@ -2,6 +2,9 @@ package ru.ncedu.opflite.domain.model.account;
 
 import ru.ncedu.opflite.domain.storage.StorableObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class CustomerAccount implements StorableObject {
 
     private String objectId;
@@ -13,6 +16,24 @@ public class CustomerAccount implements StorableObject {
     private String accountNumber;
 
     private CustomerType type;
+
+    private Map<String,Service> services = new HashMap<>();
+
+    public  CustomerAccount(){
+        services = new HashMap<String, Service>();
+    }
+
+    public void addService(String serviceName, Service service){
+        this.services.put(serviceName, service);
+    }
+
+    public Service getService (String serviceName){
+        return services.get(serviceName);
+    }
+
+    public void deleteService(String serviceName){
+        this.services.remove(serviceName);
+    }
 
     @Override
     public String getObjectId() {
